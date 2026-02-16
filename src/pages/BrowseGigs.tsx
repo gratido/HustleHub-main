@@ -6,8 +6,7 @@ import { getGigs, CATEGORIES } from "@/lib/mockData";
 
 const BASE_ID = "appbUibQs2XIrnY6U";
 const TABLE_NAME = "Gigs";
-const AIRTABLE_TOKEN = "patIMvTRcNbKHY9QT.84139eabfc846778d5155593a9c922964fc262f425b5cf3e2a37d8cacaf5537a";
-
+const AIRTABLE_TOKEN = ""
 interface Gig {
   id: string;
   title: string;
