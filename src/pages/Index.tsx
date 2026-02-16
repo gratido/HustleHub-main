@@ -12,6 +12,8 @@ const fadeUp = {
   transition: { duration: 0.5 },
 };
 
+const GIG_FORM_URL = "https://airtable.com/appbUibQs2XIrnY6U/pagk2kYlarqT5xltv/form";
+
 const Index = () => {
   const allGigs = getGigs();
   const featuredGigs = allGigs.slice(0, 4);
@@ -34,10 +36,17 @@ const Index = () => {
               <p className="text-lg text-muted-foreground mb-8 max-w-lg">
                 The campus micro-gig marketplace built for students. Post a task, find skilled peers, and earn — all within your college network.
               </p>
+
               <div className="flex flex-wrap gap-3">
-                <Link to="/post" className="gradient-btn rounded-full px-6 py-3 text-sm flex items-center gap-2">
+                <a
+                  href={GIG_FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="gradient-btn rounded-full px-6 py-3 text-sm flex items-center gap-2"
+                >
                   Post a Gig <ArrowRight className="h-4 w-4" />
-                </Link>
+                </a>
+
                 <Link
                   to="/browse"
                   className="rounded-full border border-border bg-secondary px-6 py-3 text-sm font-medium hover:bg-muted transition-colors"
@@ -46,6 +55,7 @@ const Index = () => {
                 </Link>
               </div>
             </motion.div>
+
             <motion.div {...fadeUp} transition={{ delay: 0.2, duration: 0.5 }} className="hidden lg:block">
               <img src={heroImage} alt="Students collaborating" className="w-full rounded-2xl" />
             </motion.div>
@@ -79,6 +89,7 @@ const Index = () => {
             <h2 className="font-heading text-3xl font-bold mb-3">How It Works</h2>
             <p className="text-muted-foreground">Three simple steps to start hustling</p>
           </motion.div>
+
           <div className="grid gap-8 md:grid-cols-3">
             {[
               { icon: Send, title: "Post a Gig", desc: "Describe what you need help with, set a budget in ₹, and publish it to your campus network." },
@@ -114,6 +125,7 @@ const Index = () => {
               View all <ArrowRight className="h-3 w-3" />
             </Link>
           </motion.div>
+
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {featuredGigs.map((gig, i) => (
               <GigCard key={gig.id} gig={gig} index={i} />
@@ -127,8 +139,11 @@ const Index = () => {
         <div className="container">
           <motion.div {...fadeUp} className="text-center mb-12">
             <h2 className="font-heading text-3xl font-bold mb-3">Why HustleHub?</h2>
-            <p className="text-muted-foreground">Skip the corporate ladder. Gain real-world experience through meaningful short-term projects.</p>
+            <p className="text-muted-foreground">
+              Skip the corporate ladder. Gain real-world experience through meaningful short-term projects.
+            </p>
           </motion.div>
+
           <div className="grid gap-8 md:grid-cols-3">
             {[
               { icon: Rocket, title: "Launch Your Portfolio", desc: "Every gig you complete adds to your skill graph and portfolio. Build experience that actually matters to employers." },
@@ -159,9 +174,11 @@ const Index = () => {
             <h2 className="font-heading text-3xl font-bold text-primary-foreground mb-4">
               Ready to start your next <span className="text-yellow">hustle</span>?
             </h2>
+
             <p className="text-primary-foreground/80 mb-8 max-w-md mx-auto">
               Join the community of makers, creators, and builders shaping the future of campus work.
             </p>
+
             <div className="flex flex-wrap justify-center gap-3">
               <Link
                 to="/browse"
@@ -169,12 +186,15 @@ const Index = () => {
               >
                 Get Started Now
               </Link>
-              <Link
-                to="/post"
+
+              <a
+                href={GIG_FORM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-full border-2 border-primary-foreground/30 px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary-foreground/10 transition-colors"
               >
                 Post a Listing
-              </Link>
+              </a>
             </div>
           </motion.div>
         </div>
