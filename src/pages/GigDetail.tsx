@@ -1,17 +1,88 @@
 import { useParams, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
-  ArrowLeft, Clock, IndianRupee, MapPin, Star, CheckCircle2,
+  ArrowLeft, Clock, MapPin, CheckCircle2,
   Share2, Heart
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { getGigs, getApplicantCount, categoryStyles } from "@/lib/mockData";
 
-const APPLICATION_FORM_URL = "https://airtable.com/appbUibQs2XIrnY6U/pag9Pwiqmunz7vThL/form";
+const APPLICATION_FORM_URL =
+  "https://airtable.com/appbUibQs2XIrnY6U/pag9Pwiqmunz7vThL/form";
+
+const BASE_ID = "appbUibQs2XIrnY6U";
+const TABLE_NAME = "Gigs";
+const AIRTABLE_TOKEN = "patIMvTRcNbKHY9QT.84139eabfc846778d5155593a9c922964fc262f425b5cf3e2a37d8cacaf5537a"; // use same one from Browse
 
 const GigDetail = () => {
   const { id } = useParams();
-  const allGigs = getGigs();
-  const gig = allGigs.find((g) => g.id === id);
+  const mockGigs = getGigs();
+
+  const [airtableGig, setAirtableGig] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGig = async () => {
+      // If it's mock ID → no need to fetch
+      if (!id?.startsWith("rec")) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${AIRTABLE_TOKEN}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          setLoading(false);
+          return;
+        }
+
+        const record = await response.json();
+
+        setAirtableGig({
+          id: record.id,
+          title: record.fields.Title || "Untitled",
+          category: record.fields.Category || "Others",
+          budget: record.fields.Budget || 0,
+          description: record.fields.Description || "",
+          skills: [],
+          meetupDetails: "",
+          whatINeedHelp: record.fields.Description
+            ? [record.fields.Description]
+            : [],
+          deadline: record.fields.Deadline || new Date(),
+          locationType: "Remote",
+          datePosted: new Date().toISOString(),
+        });
+
+        setLoading(false);
+      } catch (error) {
+        console.log("Error fetching Airtable gig");
+        setLoading(false);
+      }
+    };
+
+    fetchGig();
+  }, [id]);
+
+  const gig =
+    mockGigs.find((g) => g.id === id) ||
+    airtableGig;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-24 flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
 
   if (!gig) {
     return (
@@ -22,7 +93,7 @@ const GigDetail = () => {
   }
 
   const applicantCount = getApplicantCount(gig);
-  const otherGigs = allGigs.filter((g) => g.id !== id).slice(0, 2);
+  const otherGigs = mockGigs.filter((g) => g.id !== id).slice(0, 2);
 
   return (
     <div className="min-h-screen pt-24 pb-16">
@@ -81,19 +152,6 @@ const GigDetail = () => {
               </div>
             </div>
 
-            {/* Skills */}
-            <div className="flex flex-wrap gap-2">
-              {gig.skills.map((skill) => (
-                <span
-                  key={skill}
-                  className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-
-            {/* Description */}
             <div>
               <h2 className="font-heading text-lg font-semibold mb-2">
                 The Hustle
@@ -103,28 +161,12 @@ const GigDetail = () => {
               </p>
             </div>
 
-            {/* Meetup */}
-            <div className="glass-card p-4 flex items-start gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                <MapPin className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="font-heading text-sm font-semibold">
-                  Meetup Location
-                </p>
-                <p className="text-sm text-muted-foreground italic">
-                  "{gig.meetupDetails}"
-                </p>
-              </div>
-            </div>
-
-            {/* What I Need Help With */}
             <div>
               <h2 className="font-heading text-lg font-semibold mb-3">
                 What I Need Help With
               </h2>
               <div className="space-y-2">
-                {gig.whatINeedHelp.map((item, i) => (
+                {(gig.whatINeedHelp || []).map((item: string, i: number) => (
                   <div key={i} className="flex items-start gap-2">
                     <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 shrink-0" />
                     <p className="text-sm text-muted-foreground">{item}</p>
@@ -151,7 +193,6 @@ const GigDetail = () => {
                 </span>
               </div>
 
-              {/* 🔥 APPLY NOW DIRECT TO AIRTABLE */}
               <button
                 onClick={() => window.open(APPLICATION_FORM_URL, "_blank")}
                 className="gradient-btn w-full rounded-xl py-3 text-sm font-semibold mb-4"

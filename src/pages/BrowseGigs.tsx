@@ -6,18 +6,10 @@ import { getGigs, CATEGORIES } from "@/lib/mockData";
 
 const BASE_ID = "appbUibQs2XIrnY6U";
 const TABLE_NAME = "Gigs";
-const AIRTABLE_TOKEN = ""
-interface Gig {
-  id: string;
-  title: string;
-  category: string;
-  budget: number;
-  description?: string;
-  skills?: string[];
-}
+const AIRTABLE_TOKEN = "patIMvTRcNbKHY9QT.84139eabfc846778d5155593a9c922964fc262f425b5cf3e2a37d8cacaf5537a";
 
 const BrowseGigs = () => {
-  const [airtableGigs, setAirtableGigs] = useState<Gig[]>([]);
+  const [airtableGigs, setAirtableGigs] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("All");
 
@@ -40,10 +32,32 @@ const BrowseGigs = () => {
         const formatted = data.records.map((record: any) => ({
           id: record.id,
           title: record.fields.Title || "Untitled",
-          category: record.fields.Category || "Others",
+          category: record.fields.Category || "Design",
           budget: record.fields.Budget || 0,
-          description: "",
-          skills: [],
+          deadline: record.fields.Deadline || new Date().toISOString(),
+          skills: record.fields.Skills || [],
+
+          // Description → What I Need Help With
+          whatINeedHelp: record.fields.Description
+            ? [record.fields.Description]
+            : [],
+
+          description: record.fields.Description || "",
+
+          locationType: "Remote",
+          meetupDetails: "To be decided.",
+
+          postedBy: {
+            name: record.fields["Poster Name"] || "Anonymous",
+            department: "",
+            year: "",
+            college: "Your Campus",
+            rating: 5,
+            hustlesCompleted: 0,
+            avatar: ""
+          },
+
+          datePosted: new Date().toISOString()
         }));
 
         setAirtableGigs(formatted);
@@ -55,7 +69,6 @@ const BrowseGigs = () => {
     fetchGigs();
   }, []);
 
-  // 🔥 Merge mock + Airtable
   const allGigs = [...mockGigs, ...airtableGigs];
 
   const filtered = useMemo(() => {
@@ -83,7 +96,6 @@ const BrowseGigs = () => {
           </p>
         </motion.div>
 
-        {/* Search */}
         <div className="flex gap-3 mb-6">
           <div className="flex-1 flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3">
             <Search className="h-5 w-5 text-muted-foreground" />
@@ -96,7 +108,6 @@ const BrowseGigs = () => {
           </div>
         </div>
 
-        {/* Category Filters */}
         <div className="flex flex-wrap gap-2 mb-8">
           <button
             onClick={() => setActiveCategory("All")}
@@ -124,7 +135,6 @@ const BrowseGigs = () => {
           ))}
         </div>
 
-        {/* Grid */}
         {filtered.length > 0 ? (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((gig, i) => (

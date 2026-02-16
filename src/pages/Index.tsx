@@ -3,7 +3,7 @@ import { ArrowRight, Zap, Search, Send, Rocket, TrendingUp, Wallet } from "lucid
 import { motion } from "framer-motion";
 import GigCard from "@/components/GigCard";
 import { getGigs, stats } from "@/lib/mockData";
-import heroImage from "@/assets/hero-illustration.png";
+import heroImage from "@/assets/s1.png";
 
 const fadeUp = {
   initial: { opacity: 0, y: 30 },
