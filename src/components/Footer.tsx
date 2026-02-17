@@ -20,7 +20,9 @@ const Footer = () => {
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
                 <Zap className="h-3.5 w-3.5 text-primary-foreground" />
               </div>
-              Hustle<span className="text-primary">Hub</span>
+             <span className="font-bold tracking-tight">
+  Hustle<span className="text-primary">Hub</span>
+</span>
             </Link>
             <p className="mt-3 text-sm text-muted-foreground">
               The student marketplace for micro-gigs. Find, post, and earn — all on campus.

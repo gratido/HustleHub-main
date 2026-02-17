@@ -45,9 +45,9 @@ const helpData: Record<string, { title: string; items: { q: string; a: string }[
   contact: {
     title: "Contact Us",
     items: [
-      { q: "How can I reach HustleHub?", a: "Email us at support@hustlehub.in or reach out via our social media channels." },
+      { q: "How can I reach HustleHub?", a: "Email us at verifiedhustlehub@gmail.com" },
       { q: "How quickly will I get a response?", a: "We aim to respond within 24 hours during weekdays." },
-      { q: "I found a bug, where do I report it?", a: "Send bug reports to support@hustlehub.in with a screenshot and description of the issue." },
+      { q: "I found a bug, where do I report it?", a: "Send bug reports to verifiedhustlehub@gmail.com with a screenshot and description of the issue." },
     ],
   },
 };

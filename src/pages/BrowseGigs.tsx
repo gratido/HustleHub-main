@@ -72,17 +72,20 @@ const BrowseGigs = () => {
   const allGigs = [...mockGigs, ...airtableGigs];
 
   const filtered = useMemo(() => {
-    return allGigs.filter((gig) => {
-      const matchesCategory =
-        activeCategory === "All" || gig.category === activeCategory;
+  return allGigs.filter((gig) => {
+    // 🔥 Only show Open gigs
+    const isOpen = gig.status ? gig.status === "Open" : true;
 
-      const matchesSearch =
-        !search ||
-        gig.title.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory =
+      activeCategory === "All" || gig.category === activeCategory;
 
-      return matchesCategory && matchesSearch;
-    });
-  }, [search, activeCategory, allGigs]);
+    const matchesSearch =
+      !search ||
+      gig.title.toLowerCase().includes(search.toLowerCase());
+
+    return isOpen && matchesCategory && matchesSearch;
+  });
+}, [search, activeCategory, allGigs]);
 
   return (
     <div className="min-h-screen pt-24 pb-16">

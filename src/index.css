@@ -39,7 +39,7 @@
     --yellow: 42 100% 71%;
     --gradient-primary: linear-gradient(135deg, hsl(252, 100%, 68%), hsl(344, 100%, 62%));
     --gradient-primary-hover: linear-gradient(135deg, hsl(252, 100%, 62%), hsl(344, 100%, 56%));
-    --glass-bg: hsla(222, 44%, 11%, 0.6);
+    --glass-bg: hsla(222, 44%, 11%, 0.75);
     --glass-border: hsla(252, 100%, 68%, 0.15);
 
     --sidebar-background: 220 50% 7%;
@@ -87,11 +87,12 @@
     transform: scale(0.98);
   }
 
-  .glass-card {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    @apply backdrop-blur-md rounded-xl;
-  }
+ .glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  @apply backdrop-blur-xl rounded-3xl shadow-xl;
+}
+
 
   .gig-card-hover {
     transition: all 220ms cubic-bezier(.2,.9,.3,1);
