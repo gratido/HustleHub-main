@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Upload } from "lucide-react";
-import { getSession, User } from "@/lib/authStore";
+import { getSession, updateUser, User } from "@/lib/authStore";
+import { getUsers } from "@/lib/authStore";  // ← make sure this is at top
 
 const EditProfile = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -28,16 +28,35 @@ const EditProfile = () => {
     if (!e.target.files) return;
     const file = e.target.files[0];
     const reader = new FileReader();
+
     reader.onloadend = () => {
-      setUser(prev => prev ? { ...prev, avatar: reader.result as string } : null);
+      setUser(prev =>
+        prev ? { ...prev, avatar: reader.result as string } : null
+      );
     };
+
     reader.readAsDataURL(file);
   };
 
-  const handleSave = () => {
-    localStorage.setItem("session", JSON.stringify(user));
-    navigate("/profile");
-  };
+ 
+
+const handleSave = () => {
+  if (!user) return;
+
+  // Update session
+  localStorage.setItem("hustlehub_session", JSON.stringify(user));
+
+  // Update master users list
+  const users = getUsers();
+  const updatedUsers = users.map(u =>
+    u.id === user.id ? user : u
+  );
+
+  localStorage.setItem("hustlehub_users", JSON.stringify(updatedUsers));
+
+  navigate("/profile");
+};
+
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-20">
@@ -80,45 +99,19 @@ const EditProfile = () => {
             />
           </div>
 
-          {/* Name */}
-          <div>
-            <label className="text-sm font-medium mb-2 block">Name</label>
-            <input
-              value={user.name}
-              onChange={(e) => handleChange("name", e.target.value)}
-              className="w-full bg-muted p-3 rounded-md"
-            />
-          </div>
-
-          {/* Year */}
-          <div>
-            <label className="text-sm font-medium mb-2 block">Year</label>
-            <input
-              value={user.year}
-              onChange={(e) => handleChange("year", e.target.value)}
-              className="w-full bg-muted p-3 rounded-md"
-            />
-          </div>
-
-          {/* Department */}
-          <div>
-            <label className="text-sm font-medium mb-2 block">Department</label>
-            <input
-              value={user.department}
-              onChange={(e) => handleChange("department", e.target.value)}
-              className="w-full bg-muted p-3 rounded-md"
-            />
-          </div>
-
-          {/* College */}
-          <div>
-            <label className="text-sm font-medium mb-2 block">College</label>
-            <input
-              value={user.college}
-              onChange={(e) => handleChange("college", e.target.value)}
-              className="w-full bg-muted p-3 rounded-md"
-            />
-          </div>
+          {/* Editable Fields */}
+          {["name", "year", "department", "college"].map(field => (
+            <div key={field}>
+              <label className="text-sm font-medium mb-2 block capitalize">
+                {field}
+              </label>
+              <input
+                value={(user as any)[field]}
+                onChange={(e) => handleChange(field as keyof User, e.target.value)}
+                className="w-full bg-muted p-3 rounded-md"
+              />
+            </div>
+          ))}
 
           {/* Bio */}
           <div>
